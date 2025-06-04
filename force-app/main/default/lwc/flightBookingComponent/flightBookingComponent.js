@@ -11,6 +11,9 @@ export default class flightBookingComponent extends LightningElement {
     @track Name;
     @track Email;
     @track Phone;
+    @track Offers;
+    @track bookingId; 
+
     departureFrom = '';
     arrivalTo = '';
     departureDate = '';
@@ -56,6 +59,9 @@ export default class flightBookingComponent extends LightningElement {
     handlePhone(event) {
         this.Phone = event.target.value;
     }
+    handleOffers(event) {
+        this.Offers = event.target.value;
+    }   
 
     handleConfirmBooking() {
         createBookingRecord({
@@ -66,14 +72,16 @@ export default class flightBookingComponent extends LightningElement {
             cityFrom: this.selectedFlight.City_From__c,
             cityTo: this.selectedFlight.City_To__c,
             departureDate: this.selectedFlight.Departure_Date__c,
-            price: this.selectedFlight.Price__c
+            price: this.selectedFlight.Price__c,
+            Offers: this.Offers
         })
         .then(result => {
             this.showToast('Success', 'Your Booking is Successful! You are redirected to the search page', 'success');
-            //Refresh the whole page after 5 sec
+            this.bookingId = result;
+            //Refresh the whole page after 10 sec
             setTimeout(() => {
                 window.location.reload();
-            }, 5000); // 5000 milliseconds = 5 seconds
+            }, 10000); // 10000 milliseconds = 10 seconds
         })
         .catch(error => {
             this.showToast('Error', error.body ? error.body.message : error.message, 'error');

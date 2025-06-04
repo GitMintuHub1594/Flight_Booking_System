@@ -21,7 +21,7 @@ public with sharing class FlightSearchController {
     }
 
     @AuraEnabled
-    public static void createBookingRecord(Id flightId, String customerName, String customerEmail, String customerPhone, String cityFrom, String cityTo, Date departureDate, Decimal price) {
+    public static Id createBookingRecord(Id flightId, String customerName, String customerEmail, String customerPhone, String cityFrom, String cityTo, Date departureDate, Decimal price, String Offers) {
         Booking__c newBooking = new Booking__c();
 
         if (!String.isEmpty(customerName) && !String.isEmpty(customerEmail)) {
@@ -34,12 +34,16 @@ public with sharing class FlightSearchController {
             newBooking.Departure_Date__c = departureDate;
             newBooking.Currency__c = price;
 
+newBooking.Offers__c = Offers;
+
             try{
                 insert newBooking;
+                
             } 
             catch(Exception e) {
                 throw new AuraHandledException(e.getMessage());
             }
+            return newBooking.Id;
         }
         else{
             throw new AuraHandledException('Please fill all fields');
